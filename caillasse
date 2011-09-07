@@ -1,3 +1,50 @@
 #!/usr/bin/python
 
-import velat
+"""
+This is a basic shared expenses balance calculator GUI.
+
+Copyright (C) 2011 Feth AREZKI <feth >AT< tuttu.info>
+
+You can copy, redistribute or modify this Program under the terms of
+the GNU General Public License version 3 as published by the Free
+Software Foundation.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+version 3 along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+02110-1301, USA.
+"""
+
+try:
+    import velat
+except ImportError:
+    raise ImportError("Velat is not available. Please install velat, "
+            "or check you are in the correct virtualenv etc.")
+
+try:
+    from PyQt4.QtGui import QApplication
+except ImportError:
+    raise ImportError("PyQt4 is not available. This is a PyQt4 based GUI. "
+            "Cannot start.")
+
+try:
+    import caillasse_pyqt
+except ImportError:
+    raise ImportError("Looks like caillasse is not properly installed. "
+            "Cannot start.")
+
+import sys
+
+def _main():
+    app = QApplication(sys.argv)
+    window = caillasse_pyqt.WINDOW()
+    window.show()
+    return app.exec_()
+
+if __name__ == '__main__':
+    sys.exit(_main())
