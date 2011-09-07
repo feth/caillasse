@@ -1,1 +1,1 @@
-from .main_window import WINDOW
+from .main_window import Caillasse

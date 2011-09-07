@@ -42,7 +42,7 @@ import sys
 
 def _main():
     app = QApplication(sys.argv)
-    window = caillasse_pyqt.WINDOW()
+    window = caillasse_pyqt.Caillasse()
     window.show()
     return app.exec_()
 
