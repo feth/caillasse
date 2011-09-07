@@ -76,14 +76,48 @@
     <property name="title">
      <string>File</string>
     </property>
+    <addaction name="actionNew"/>
     <addaction name="actionSave"/>
-    <addaction name="actionSave_as"/>
+    <addaction name="actionSave_copy"/>
     <addaction name="actionLoad"/>
     <addaction name="actionRecent"/>
    </widget>
+   <widget class="QMenu" name="menuItems">
+    <property name="title">
+     <string>Items</string>
+    </property>
+    <addaction name="actionNew_person"/>
+    <addaction name="actionNew_activity"/>
+    <addaction name="separator"/>
+    <addaction name="actionRemove_person"/>
+    <addaction name="actionRemove_activity"/>
+   </widget>
    <addaction name="menuLoad"/>
+   <addaction name="menuItems"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QToolBar" name="toolBar">
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="actionRecent"/>
+   <addaction name="actionLoad"/>
+   <addaction name="actionNew"/>
+   <addaction name="actionSave"/>
+   <addaction name="actionSave_copy"/>
+   <addaction name="separator"/>
+   <addaction name="actionNew_person"/>
+   <addaction name="actionNew_activity"/>
+   <addaction name="separator"/>
+   <addaction name="actionRemove_person"/>
+   <addaction name="actionRemove_activity"/>
+  </widget>
   <action name="actionSave">
    <property name="text">
     <string>Save</string>
@@ -99,9 +133,34 @@
     <string>Recent</string>
    </property>
   </action>
-  <action name="actionSave_as">
+  <action name="actionSave_copy">
    <property name="text">
     <string>Save a copy</string>
+   </property>
+  </action>
+  <action name="actionNew">
+   <property name="text">
+    <string>New</string>
+   </property>
+  </action>
+  <action name="actionNew_person">
+   <property name="text">
+    <string>New person</string>
+   </property>
+  </action>
+  <action name="actionNew_activity">
+   <property name="text">
+    <string>New activity</string>
+   </property>
+  </action>
+  <action name="actionRemove_person">
+   <property name="text">
+    <string>Remove person</string>
+   </property>
+  </action>
+  <action name="actionRemove_activity">
+   <property name="text">
+    <string>Remove activity</string>
    </property>
   </action>
  </widget>
