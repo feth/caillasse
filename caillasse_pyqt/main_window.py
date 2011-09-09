@@ -1,14 +1,16 @@
-from PyQt4.QtCore import SIGNAL, pyqtSignal
-from PyQt4.QtGui import QInputDialog, QMainWindow, QMessageBox, QStandardItem,\
-        QStandardItemModel
+from PyQt4.QtCore import QObject, Qt, SIGNAL, pyqtSignal
+from PyQt4.QtGui import QAction, QMainWindow
 
 from velat import Velat
 
 from .main_window_ui import Ui_caillasse
+from .models import PersonsModel
 
 
-def _person_item(person):
-    return QStandardItem(person.name)
+def _connect(source, target):
+    if isinstance(source, QAction):
+        return QObject.connect(source, SIGNAL('triggered()'), target)
+    assert False, "unhandled type %s" % type(source)
 
 
 class Caillasse(QMainWindow, Ui_caillasse):
@@ -21,26 +23,22 @@ class Caillasse(QMainWindow, Ui_caillasse):
 
         self._file = None
         self._velat = None
+        self._all_persons_model = None
+        self._expenses_model = None
 
-        self._persons_model = QStandardItemModel(self)
-        self.all_persons.setModel(self._persons_model)
-
-        self._activities_model = QStandardItemModel(self)
-        self.all_activities.setModel(self._persons_model)
-
-        self.connect(self.actionNew, SIGNAL('triggered()'), self._new)
-        self.connect(self.actionSave, SIGNAL('triggered()'), self._save)
-        self.connect(self.actionSave_copy, SIGNAL('triggered()'), self._save_as)
-        self.connect(self.actionNew_person, SIGNAL('triggered()'), self._new_person)
-        self.connect(self, SIGNAL("new_person"), self._new_person)
+        _connect(self.actionNew, self._new)
+        _connect(self.actionSave, self._save)
+        _connect(self.actionSave_copy, self._save_as)
+        _connect(self.actionNew_person, self._new_person)
+        _connect(self.actionNew_expense, self._new_expense)
 
         self._new()
 
     def _new(self):
         self._file = None
-        self._persons_model.reset()
-        self._activities_model.reset()
         self._velat = Velat()
+        self._all_persons_model = PersonsModel(self._velat, self)
+        self.all_persons.setModel(self._all_persons_model)
 
     def _save(self):
         print "save"
@@ -50,30 +48,8 @@ class Caillasse(QMainWindow, Ui_caillasse):
     def _save_as(self):
         print "save as"
     
-    def _get_name(self):
-        name, ok = QInputDialog.getText(self, "New person", "Name this person")
-        if not ok:
-            return name, False, False
-        name = unicode(name).strip()
-        if not name:
-            return name, False, True
-        return name, True, False
-
     def _new_person(self):
-        loop = True
-        while loop:
-            name, cont, loop = self._get_name()
-        print name
-        if not cont:
-            return
-        try:
-            person = self._velat.add_person(name)
-        except ValueError, err:
-            #FIXME: use a velatexception
-            QMessageBox.warning(self, "Error", "Name %s is already in use, "
-                    "try another" % name)
-            #FIXME: ue pyqtSignal
-            self.emit(SIGNAL("new_person"))
-            return
-        item = _person_item(person)
-        self._persons_model.appendRow(item)
+        self._all_persons_model.new_person(self)
+
+    def _new_expense(self):
+        self._all_persons_model.new_person(self)

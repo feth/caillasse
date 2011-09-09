@@ -37,15 +37,18 @@
            <property name="accessibleName">
             <string/>
            </property>
+           <attribute name="horizontalHeaderVisible">
+            <bool>true</bool>
+           </attribute>
           </widget>
           <widget class="QTableView" name="one_person"/>
          </widget>
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="Activities">
+      <widget class="QWidget" name="Expenses">
        <attribute name="title">
-        <string>Activities</string>
+        <string>Expenses</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_2">
         <item>
@@ -53,8 +56,8 @@
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
-          <widget class="QTableView" name="all_activities"/>
-          <widget class="QTableView" name="one_activity"/>
+          <widget class="QTableView" name="all_expenses"/>
+          <widget class="QTableView" name="one_expense"/>
          </widget>
         </item>
        </layout>
@@ -87,7 +90,7 @@
      <string>Items</string>
     </property>
     <addaction name="actionNew_person"/>
-    <addaction name="actionNew_activity"/>
+    <addaction name="actionNew_expense"/>
     <addaction name="separator"/>
     <addaction name="actionRemove_person"/>
     <addaction name="actionRemove_activity"/>
@@ -113,7 +116,7 @@
    <addaction name="actionSave_copy"/>
    <addaction name="separator"/>
    <addaction name="actionNew_person"/>
-   <addaction name="actionNew_activity"/>
+   <addaction name="actionNew_expense"/>
    <addaction name="separator"/>
    <addaction name="actionRemove_person"/>
    <addaction name="actionRemove_activity"/>
@@ -147,10 +150,19 @@
    <property name="text">
     <string>New person</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+P</string>
+   </property>
   </action>
-  <action name="actionNew_activity">
+  <action name="actionNew_expense">
    <property name="text">
-    <string>New activity</string>
+    <string>New expense</string>
+   </property>
+   <property name="toolTip">
+    <string>New expense</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+E</string>
    </property>
   </action>
   <action name="actionRemove_person">
