@@ -33,7 +33,7 @@ except ImportError:
             "Cannot start.")
 
 try:
-    import caillasse_pyqt
+    import caillasse
 except ImportError:
     raise ImportError("Looks like caillasse is not properly installed. "
             "Cannot start.")
@@ -42,7 +42,7 @@ import sys
 
 def _main():
     app = QApplication(sys.argv)
-    window = caillasse_pyqt.Caillasse()
+    window = caillasse.Caillasse()
     window.show()
     return app.exec_()
 

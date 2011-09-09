@@ -1,4 +1,4 @@
-RECURSE_DIRS=caillasse_pyqt
+RECURSE_DIRS=caillasse
 SCORIA=dist build caillasse.egg-info
 
 install: recurse
