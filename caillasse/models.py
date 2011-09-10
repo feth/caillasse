@@ -1,86 +1,77 @@
-from PyQt4.QtCore import Qt
-from PyQt4.QtGui import QInputDialog, QStandardItem, QStandardItemModel
+from PyQt4.QtGui import QDialog
 
-from velat.base import Person
+from velat.base import Expense, Person, Transfer
+
+from .model_base import CaillasseModel
+from .new_transfer_ui import Ui_new_transfer
 
 
-class PersonItem(QStandardItem):
-    def __init__(self, person, column):
-        if column == 0:
-            text = person.name
-        elif column == 1:
-            text = person.information
-        elif column == 2:
-            text = str(person.totalowed)
-        elif column == 3:
-            text = str(person.totalpaid)
-        else:
-            raise ValueError(str(column))
-        QStandardItem.__init__(self, text)
-
-        self._person = person
-        self._column = column
-
-    def setData(self, value, role):
-        if role == Qt.EditRole:
-            text = unicode(value.toString()).strip()
-            if self._column == 0:
-                # FIXME: can lead to duplicate names
-                self._person.name = text
-            if self._column == 1:
-                self._person.information = text
-        return QStandardItem.setData(self, value, role)
-
-    
-class PersonsModel(QStandardItemModel):
+class PersonsModel(CaillasseModel):
     def __init__(self, velat, parent=None):
-        QStandardItemModel.__init__(self, parent)
-        self.setHorizontalHeaderLabels(Person.SECTIONS)
-        self._velat = velat
-        self._persons = velat.persons
+        CaillasseModel.__init__(self, velat, Person.SECTIONS, parent)
+        self._new_item_name = "this new person"
+        self._new_item_title = "New person"
 
-    def new_person(self, widget):
-        """
-        widget: needed to display question in front of it
-        """
-        loop_ok = False
+    def _backend_valider(self, name):
+        person = None
         dial_msg = None
-        proposition = ""
-
-        while not loop_ok:
-
-            if not dial_msg:
-                dial_msg = "Enter a name for a new person"
-            
-            name, dial_ok = QInputDialog.getText(widget, "New person", dial_msg,
-                    text=proposition)
-
-            if not dial_ok:
-                # user cancelled
-                return
-
-            name = unicode(name).strip()
-
-            if not name:
-                dial_msg = "Please enter a valid name (empty values are refused)"
-                proposition = ""
-                continue
-
-            try:
-                person = self._velat.add_person(name)
-            except ValueError:
-                dial_msg = "Error: name '%s' is already in use, try another" % name
-                proposition = "%s bis" % name
-                continue
-            loop_ok = True
-        # take person in account in this model
-        row = list(PersonItem(person, index) 
-            for index, value in enumerate(Person.SECTIONS))
-        self.appendRow(row)
+        proposition = None
+        try:
+            person = self._velat.add_person(name)
+        except ValueError:
+            dial_msg = "Error: name '%s' is already in use, try another" % name
+            proposition = "%s bis" % name
+        return person, dial_msg, proposition
 
 
-class ExpenseItem(QStandardItem):
-    def __init__(self, expense, column):
-        if column == 0:
-            text = expense.name
-        QStandardItem.__init__(self, text)
+class ExpensesModel(CaillasseModel):
+    def __init__(self, velat, parent=None):
+        CaillasseModel.__init__(self, velat, Expense.SECTIONS, parent)
+        self._new_item_name = "this new expense"
+        self._new_item_title = "New expense"
+
+    def _backend_valider(self, name):
+        expense = None
+        dial_msg = None
+        proposition = None
+        try:
+            expense = self._velat.add_expense(name)
+        except ValueError:
+            dial_msg = "Error: name '%s' is already in use, try another" % name
+            proposition = "%s bis" % name
+        return expense, dial_msg, proposition
+
+class TransfersModel(CaillasseModel):
+    def __init__(self, velat, parent=None):
+        CaillasseModel.__init__(self, velat, Transfer.SECTIONS, parent)
+
+    def _backend_valider(self, name):
+        expense = None
+        dial_msg = None
+        proposition = None
+        try:
+            expense = self._velat.add_expense(name)
+        except ValueError:
+            dial_msg = "Error: name '%s' is already in use, try another" % name
+            proposition = "%s bis" % name
+        return expense, dial_msg, proposition
+
+    def new_item(self, widget, persons_model):
+        dialog = QDialog(widget)
+        ui = Ui_new_transfer()
+        ui.setupUi(dialog)
+        combos = ui.combo_giver, ui.combo_receiver
+        for combo in combos:
+            combo.setModel(persons_model)
+            # combo.setModelColumn(0)
+        if not dialog.exec_():
+            return
+
+        giver, receiver = (self._velat.persons[combo.currentIndex()]
+            for combo in combos)
+        amount = ui.spin_amount.value()
+        context = unicode(ui.text_context.toPlainText()).strip()
+
+        transfer = self._velat.add_transfer(giver, receiver, amount, context)
+
+        self._add_to_model(transfer)
