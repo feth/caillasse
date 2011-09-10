@@ -24,11 +24,17 @@ class CaillasseItem(QStandardItem):
 class CaillasseModel(QStandardItemModel):
     def __init__(self, velat, sections, parent=None):
         QStandardItemModel.__init__(self, parent)
-        self.setHorizontalHeaderLabels([value[0] for value in sections])
         self._velat = velat
         self._sections = sections
         self._new_item_name = "this new item"
         self._new_item_title = "New item"
+
+    def load(self, velat, item_list):
+        self.clear()
+        self.setHorizontalHeaderLabels([value[0] for value in self._sections])
+        self._velat = velat
+        for item in item_list:
+            self._add_to_model(item)
 
     def new_item(self, widget):
         loop_ok = False
