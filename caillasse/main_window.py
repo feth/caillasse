@@ -1,10 +1,13 @@
-from PyQt4.QtCore import QObject, Qt, SIGNAL, pyqtSignal
-from PyQt4.QtGui import QAction, QMainWindow, QMessageBox
+import os.path
 
-from velat import Velat
+from PyQt4.QtCore import QObject, QSettings, SIGNAL
+from PyQt4.QtGui import QAction, QFileDialog, QMainWindow, QMessageBox, QWidget
+
+from velat import Velat, velat
 
 from .main_window_ui import Ui_caillasse
 from .models import ExpensesModel, PersonsModel, TransfersModel 
+from .statusbar_ui import Ui_statusbar 
 
 
 def _connect(source, target):
@@ -13,19 +16,34 @@ def _connect(source, target):
     assert False, "unhandled type %s" % type(source)
 
 
+_FILE_FILTER = "caillasse files (*.caillasse)"
+
 class Caillasse(QMainWindow, Ui_caillasse):
 
     def __init__(self, parent=None):
         QMainWindow.__init__(self, parent)
         self.setupUi(self)
 
-        self._file = None
+        self._settings = QSettings("Free software", "Caillasse", self)
+
+        statusbar = QWidget(self)
+        self.ui_bar = Ui_statusbar()
+        self.ui_bar.setupUi(statusbar)
+        self.statusBar().addPermanentWidget(statusbar)
+
+        self._file = ""
         self._velat = None
-        self._all_persons_model = None
-        self._all_expenses_model = None
-        self._all_transfers_model = None
+
+        self._all_expenses_model = ExpensesModel(self._velat, self)
+        self.all_expenses.setModel(self._all_expenses_model)
+        self._all_persons_model = PersonsModel(self._velat, self)
+
+        self.all_persons.setModel(self._all_persons_model)
+        self._all_transfers_model = TransfersModel(self._velat, self)
+        self.all_transfers.setModel(self._all_transfers_model)
 
         _connect(self.actionNew, self._new)
+        _connect(self.actionLoad, self._load)
         _connect(self.actionSave, self._save)
         _connect(self.actionSave_copy, self._save_as)
         _connect(self.actionNew_person, self._new_person)
@@ -35,22 +53,37 @@ class Caillasse(QMainWindow, Ui_caillasse):
         self._new()
 
     def _new(self):
-        self._file = None
+        self._file = ""
         self._velat = Velat()
-        self._all_persons_model = PersonsModel(self._velat, self)
-        self.all_persons.setModel(self._all_persons_model)
-        self._all_expenses_model = ExpensesModel(self._velat, self)
-        self.all_expenses.setModel(self._all_expenses_model)
-        self._all_transfers_model = TransfersModel(self._velat, self)
-        self.all_transfers.setModel(self._all_transfers_model)
+        self._load_velat()
+
+    def _load(self):
+        filename = QFileDialog.getOpenFileName(self, "Open file", 
+                os.path.split(self._file)[0], _FILE_FILTER)
+        if not filename:
+            return
+        self._velat = velat.load(filename)
+        self._load_velat()
+        self._file = filename
+
+    def _load_velat(self):
+        self._all_persons_model.load(self._velat, self._velat.persons)
+        self._all_expenses_model.load(self._velat, self._velat.expenses)
+        self._all_transfers_model.load(self._velat, self._velat.transfers)
 
     def _save(self):
-        print "save"
-        if self._file is None:
-            return self.save_as()
+        if not self._file:
+            return self._save_as()
+        self._velat.save(self._file)
+
 
     def _save_as(self):
-        print "save as"
+        filename = QFileDialog.getSaveFileName(self, "Save as...", self._file, 
+                _FILE_FILTER)
+        if not filename:
+            return
+        self._velat.save(filename)
+        self._file = filename
     
     def _new_person(self):
         self.tabs.setCurrentIndex(0)
