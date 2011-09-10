@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
+    <width>954</width>
     <height>600</height>
    </rect>
   </property>
@@ -62,6 +62,16 @@
         </item>
        </layout>
       </widget>
+      <widget class="QWidget" name="transfers">
+       <attribute name="title">
+        <string>Transfers</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_4">
+        <item>
+         <widget class="QTableView" name="all_transfers"/>
+        </item>
+       </layout>
+      </widget>
      </widget>
     </item>
    </layout>
@@ -71,7 +81,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>800</width>
+     <width>954</width>
      <height>21</height>
     </rect>
    </property>
@@ -120,6 +130,9 @@
    <addaction name="separator"/>
    <addaction name="actionRemove_person"/>
    <addaction name="actionRemove_activity"/>
+   <addaction name="separator"/>
+   <addaction name="actionNew_transfer"/>
+   <addaction name="actionRemove_transfer"/>
   </widget>
   <action name="actionSave">
    <property name="text">
@@ -173,6 +186,19 @@
   <action name="actionRemove_activity">
    <property name="text">
     <string>Remove activity</string>
+   </property>
+  </action>
+  <action name="actionNew_transfer">
+   <property name="text">
+    <string>New transfer</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+T</string>
+   </property>
+  </action>
+  <action name="actionRemove_transfer">
+   <property name="text">
+    <string>Remove transfer</string>
    </property>
   </action>
  </widget>

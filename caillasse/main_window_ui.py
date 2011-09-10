@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'main_window.ui'
 #
-# Created: Fri Sep  9 03:43:34 2011
+# Created: Fri Sep  9 17:04:08 2011
 #      by: PyQt4 UI code generator 4.8.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -17,7 +17,7 @@ except AttributeError:
 class Ui_caillasse(object):
     def setupUi(self, caillasse):
         caillasse.setObjectName(_fromUtf8("caillasse"))
-        caillasse.resize(800, 600)
+        caillasse.resize(954, 600)
         self.centralwidget = QtGui.QWidget(caillasse)
         self.centralwidget.setObjectName(_fromUtf8("centralwidget"))
         self.verticalLayout = QtGui.QVBoxLayout(self.centralwidget)
@@ -53,10 +53,18 @@ class Ui_caillasse(object):
         self.one_expense.setObjectName(_fromUtf8("one_expense"))
         self.verticalLayout_2.addWidget(self.splitter)
         self.tabs.addTab(self.Expenses, _fromUtf8(""))
+        self.transfers = QtGui.QWidget()
+        self.transfers.setObjectName(_fromUtf8("transfers"))
+        self.verticalLayout_4 = QtGui.QVBoxLayout(self.transfers)
+        self.verticalLayout_4.setObjectName(_fromUtf8("verticalLayout_4"))
+        self.all_transfers = QtGui.QTableView(self.transfers)
+        self.all_transfers.setObjectName(_fromUtf8("all_transfers"))
+        self.verticalLayout_4.addWidget(self.all_transfers)
+        self.tabs.addTab(self.transfers, _fromUtf8(""))
         self.verticalLayout.addWidget(self.tabs)
         caillasse.setCentralWidget(self.centralwidget)
         self.menubar = QtGui.QMenuBar(caillasse)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 21))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 954, 21))
         self.menubar.setObjectName(_fromUtf8("menubar"))
         self.menuLoad = QtGui.QMenu(self.menubar)
         self.menuLoad.setObjectName(_fromUtf8("menuLoad"))
@@ -87,6 +95,10 @@ class Ui_caillasse(object):
         self.actionRemove_person.setObjectName(_fromUtf8("actionRemove_person"))
         self.actionRemove_activity = QtGui.QAction(caillasse)
         self.actionRemove_activity.setObjectName(_fromUtf8("actionRemove_activity"))
+        self.actionNew_transfer = QtGui.QAction(caillasse)
+        self.actionNew_transfer.setObjectName(_fromUtf8("actionNew_transfer"))
+        self.actionRemove_transfer = QtGui.QAction(caillasse)
+        self.actionRemove_transfer.setObjectName(_fromUtf8("actionRemove_transfer"))
         self.menuLoad.addAction(self.actionNew)
         self.menuLoad.addAction(self.actionSave)
         self.menuLoad.addAction(self.actionSave_copy)
@@ -110,6 +122,9 @@ class Ui_caillasse(object):
         self.toolBar.addSeparator()
         self.toolBar.addAction(self.actionRemove_person)
         self.toolBar.addAction(self.actionRemove_activity)
+        self.toolBar.addSeparator()
+        self.toolBar.addAction(self.actionNew_transfer)
+        self.toolBar.addAction(self.actionRemove_transfer)
 
         self.retranslateUi(caillasse)
         self.tabs.setCurrentIndex(0)
@@ -119,6 +134,7 @@ class Ui_caillasse(object):
         caillasse.setWindowTitle(QtGui.QApplication.translate("caillasse", "Caillasse", None, QtGui.QApplication.UnicodeUTF8))
         self.tabs.setTabText(self.tabs.indexOf(self.Persons), QtGui.QApplication.translate("caillasse", "Persons", None, QtGui.QApplication.UnicodeUTF8))
         self.tabs.setTabText(self.tabs.indexOf(self.Expenses), QtGui.QApplication.translate("caillasse", "Expenses", None, QtGui.QApplication.UnicodeUTF8))
+        self.tabs.setTabText(self.tabs.indexOf(self.transfers), QtGui.QApplication.translate("caillasse", "Transfers", None, QtGui.QApplication.UnicodeUTF8))
         self.menuLoad.setTitle(QtGui.QApplication.translate("caillasse", "File", None, QtGui.QApplication.UnicodeUTF8))
         self.menuItems.setTitle(QtGui.QApplication.translate("caillasse", "Items", None, QtGui.QApplication.UnicodeUTF8))
         self.toolBar.setWindowTitle(QtGui.QApplication.translate("caillasse", "toolBar", None, QtGui.QApplication.UnicodeUTF8))
@@ -134,4 +150,7 @@ class Ui_caillasse(object):
         self.actionNew_expense.setShortcut(QtGui.QApplication.translate("caillasse", "Ctrl+E", None, QtGui.QApplication.UnicodeUTF8))
         self.actionRemove_person.setText(QtGui.QApplication.translate("caillasse", "Remove person", None, QtGui.QApplication.UnicodeUTF8))
         self.actionRemove_activity.setText(QtGui.QApplication.translate("caillasse", "Remove activity", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionNew_transfer.setText(QtGui.QApplication.translate("caillasse", "New transfer", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionNew_transfer.setShortcut(QtGui.QApplication.translate("caillasse", "Ctrl+T", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionRemove_transfer.setText(QtGui.QApplication.translate("caillasse", "Remove transfer", None, QtGui.QApplication.UnicodeUTF8))
 
