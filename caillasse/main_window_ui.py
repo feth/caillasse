@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'main_window.ui'
 #
-# Created: Sat Sep 10 17:10:07 2011
+# Created: Sat Sep 10 19:19:12 2011
 #      by: PyQt4 UI code generator 4.8.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -146,10 +146,13 @@ class Ui_caillasse(object):
         self.toolBar.setWindowTitle(QtGui.QApplication.translate("caillasse", "toolBar", None, QtGui.QApplication.UnicodeUTF8))
         self.toolBar_2.setWindowTitle(QtGui.QApplication.translate("caillasse", "toolBar_2", None, QtGui.QApplication.UnicodeUTF8))
         self.actionSave.setText(QtGui.QApplication.translate("caillasse", "Save", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionSave.setShortcut(QtGui.QApplication.translate("caillasse", "Ctrl+S", None, QtGui.QApplication.UnicodeUTF8))
         self.actionLoad.setText(QtGui.QApplication.translate("caillasse", "Load", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionLoad.setShortcut(QtGui.QApplication.translate("caillasse", "Ctrl+O", None, QtGui.QApplication.UnicodeUTF8))
         self.actionRecent.setText(QtGui.QApplication.translate("caillasse", "Recent", None, QtGui.QApplication.UnicodeUTF8))
         self.actionSave_copy.setText(QtGui.QApplication.translate("caillasse", "Save a copy", None, QtGui.QApplication.UnicodeUTF8))
         self.actionNew.setText(QtGui.QApplication.translate("caillasse", "New", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionNew.setShortcut(QtGui.QApplication.translate("caillasse", "Ctrl+N", None, QtGui.QApplication.UnicodeUTF8))
         self.actionNew_person.setText(QtGui.QApplication.translate("caillasse", "New person", None, QtGui.QApplication.UnicodeUTF8))
         self.actionNew_person.setShortcut(QtGui.QApplication.translate("caillasse", "Ctrl+P", None, QtGui.QApplication.UnicodeUTF8))
         self.actionNew_expense.setText(QtGui.QApplication.translate("caillasse", "New expense", None, QtGui.QApplication.UnicodeUTF8))
