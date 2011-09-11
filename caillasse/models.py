@@ -8,7 +8,8 @@ from .new_transfer_ui import Ui_new_transfer
 
 class PersonsModel(CaillasseModel):
     def __init__(self, velat, parent=None):
-        CaillasseModel.__init__(self, velat, Person.SECTIONS, parent)
+        CaillasseModel.__init__(self, velat, Person.SECTIONS, parent,
+                change_balance=False)
         self._new_item_name = "this new person"
         self._new_item_title = "New person"
 
@@ -22,6 +23,11 @@ class PersonsModel(CaillasseModel):
             dial_msg = "Error: name '%s' is already in use, try another" % name
             proposition = "%s bis" % name
         return person, dial_msg, proposition
+
+    def update_totals(self):
+        for row, person in enumerate(self._velat.persons):
+            # 2 is for balance column
+            self.item(row, 2).setText(str(person.balance))
 
 
 class ExpensesModel(CaillasseModel):
