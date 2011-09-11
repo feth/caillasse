@@ -1,4 +1,5 @@
 import os.path
+from functools import wraps
 
 from PyQt4.QtCore import QObject, QSettings, SIGNAL
 from PyQt4.QtGui import QAction, QFileDialog, QMainWindow, QMessageBox, QWidget
@@ -13,10 +14,24 @@ from .statusbar_ui import Ui_statusbar
 def _connect(source, target):
     if isinstance(source, QAction):
         return QObject.connect(source, SIGNAL('triggered()'), target)
+    if isinstance(source, (ExpensesModel, PersonsModel, TransfersModel)):
+        return QObject.connect(source, SIGNAL('change_balance'), target)
     assert False, "unhandled type %s" % type(source)
 
 
 _FILE_FILTER = "caillasse files (*.caillasse)"
+
+
+def _balance(function):
+    @wraps(function)
+    def wrapper(self, *args, **kwargs):
+        result = function(self, *args, **kwargs)
+        if self._dirty_balance:
+            self._update_totals()
+            self._dirty_balance = False
+        return result
+    return wrapper
+
 
 class Caillasse(QMainWindow, Ui_caillasse):
 
@@ -33,13 +48,14 @@ class Caillasse(QMainWindow, Ui_caillasse):
 
         self._file = ""
         self._velat = None
+        self._dirty_balance = False
 
         self._all_expenses_model = ExpensesModel(self._velat, self)
-        self.all_expenses.setModel(self._all_expenses_model)
         self._all_persons_model = PersonsModel(self._velat, self)
-
-        self.all_persons.setModel(self._all_persons_model)
         self._all_transfers_model = TransfersModel(self._velat, self)
+
+        self.all_expenses.setModel(self._all_expenses_model)
+        self.all_persons.setModel(self._all_persons_model)
         self.all_transfers.setModel(self._all_transfers_model)
 
         _connect(self.actionNew, self._new)
@@ -50,6 +66,9 @@ class Caillasse(QMainWindow, Ui_caillasse):
         _connect(self.actionNew_expense, self._new_expense)
         _connect(self.actionNew_transfer, self._new_transfer)
 
+        for model in (self._all_expenses_model, self._all_transfers_model):
+            _connect(model, self._schedule_balance)
+
         self._new()
 
     def _new(self):
@@ -57,6 +76,7 @@ class Caillasse(QMainWindow, Ui_caillasse):
         self._velat = Velat()
         self._load_velat()
 
+    @_balance
     def _load(self):
         filename = QFileDialog.getOpenFileName(self, "Open file", 
                 os.path.split(self._file)[0], _FILE_FILTER)
@@ -76,7 +96,6 @@ class Caillasse(QMainWindow, Ui_caillasse):
             return self._save_as()
         self._velat.save(self._file)
 
-
     def _save_as(self):
         filename = QFileDialog.getSaveFileName(self, "Save as...", self._file, 
                 _FILE_FILTER)
@@ -84,15 +103,17 @@ class Caillasse(QMainWindow, Ui_caillasse):
             return
         self._velat.save(filename)
         self._file = filename
-    
+
     def _new_person(self):
         self.tabs.setCurrentIndex(0)
         self._all_persons_model.new_item(self)
 
+    @_balance
     def _new_expense(self):
         self.tabs.setCurrentIndex(1)
         self._all_expenses_model.new_item(self)
 
+    @_balance
     def _new_transfer(self):
         if not self._velat.persons:
             QMessageBox.warning(self, "New transfer", "Please create persons "
@@ -100,3 +121,11 @@ class Caillasse(QMainWindow, Ui_caillasse):
             return
         self.tabs.setCurrentIndex(2)
         self._all_transfers_model.new_item(self, self._all_persons_model)
+
+    def _schedule_balance(self):
+        self._dirty_balance = True
+
+    def _update_totals(self):
+        solution = self._velat.solve()
+        self._all_persons_model.update_totals()
+        # TODO: build solution in advices too
