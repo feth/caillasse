@@ -1,4 +1,4 @@
-from PyQt4.QtCore import Qt
+from PyQt4.QtCore import Qt, SIGNAL, pyqtSignal
 from PyQt4.QtGui import QInputDialog, QStandardItem, QStandardItemModel
 
 
@@ -22,19 +22,23 @@ class CaillasseItem(QStandardItem):
 
 
 class CaillasseModel(QStandardItemModel):
-    def __init__(self, velat, sections, parent=None):
+
+    def __init__(self, velat, sections, parent=None, change_balance=True):
         QStandardItemModel.__init__(self, parent)
         self._velat = velat
         self._sections = sections
         self._new_item_name = "this new item"
         self._new_item_title = "New item"
+        self._change_balance = change_balance
 
     def load(self, velat, item_list):
         self.clear()
         self.setHorizontalHeaderLabels([value[0] for value in self._sections])
         self._velat = velat
         for item in item_list:
-            self._add_to_model(item)
+            # change_balance is false to optimize: we send the signal after
+            self._add_to_model(item, change_balance=False)
+        self._balance_changed()
 
     def new_item(self, widget):
         loop_ok = False
@@ -45,7 +49,7 @@ class CaillasseModel(QStandardItemModel):
 
             if not dial_msg:
                 dial_msg = "Enter a name for %s" % self._new_item_name
-            
+
             name, dial_ok = QInputDialog.getText(widget, self._new_item_title, 
                     dial_msg, text=proposition)
 
@@ -67,11 +71,19 @@ class CaillasseModel(QStandardItemModel):
 
         self._add_to_model(item)
 
-    def _add_to_model(self, item):
+    def _add_to_model(self, item, change_balance=True):
+        """
+        If change_balance and self._change_balance (default), emits the SIGNAL change_balance.
+        """
         # take item in account in this model
         row = list(CaillasseItem(item, index, value[1]) # value[1]: editable? bool
             for index, value in enumerate(self._sections))
         self.appendRow(row)
+        self._balance_changed(change_balance)
+
+    def _balance_changed(self, emit=True):
+        if self._change_balance and emit:
+            self.emit(SIGNAL("change_balance"))
 
     def _backend_valider(self, name):
         """
