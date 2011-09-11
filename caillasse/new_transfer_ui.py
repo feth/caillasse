@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'new_transfer.ui'
 #
-# Created: Sat Sep 10 08:17:04 2011
+# Created: Sun Sep 11 10:23:41 2011
 #      by: PyQt4 UI code generator 4.8.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -40,6 +40,7 @@ class Ui_new_transfer(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.spin_amount.sizePolicy().hasHeightForWidth())
         self.spin_amount.setSizePolicy(sizePolicy)
+        self.spin_amount.setMaximum(99999.0)
         self.spin_amount.setObjectName(_fromUtf8("spin_amount"))
         self.formLayout.setWidget(1, QtGui.QFormLayout.FieldRole, self.spin_amount)
         self.label_receiver = QtGui.QLabel(new_transfer)
