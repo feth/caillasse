@@ -19,9 +19,11 @@ Both can be fetched from github
 
 install
 -------
+
 For the time being:
 
-git clone this and deps
-mkvirtualenv caillasse
-python setup.py install in peinard, then velat, then caillasse.
-then you can run 'caillasse'
+ - git clone this and deps
+ - mkvirtualenv caillasse
+ - python setup.py install in peinard, then velat, then caillasse.
+ - then you can run 'caillasse'
+
